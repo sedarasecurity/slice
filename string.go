@@ -17,7 +17,7 @@ func NewStringSlice() StringSlice {
 
 // Add adds the element to the slice
 func (s StringSlice) Add(keys ...string) {
-	for _, v := range keys {
+	for _, key := range keys {
 		s[key] = struct{}{}
 	}
 }
