@@ -16,8 +16,10 @@ func NewStringSlice() StringSlice {
 }
 
 // Add adds the element to the slice
-func (s StringSlice) Add(key string) {
-	s[key] = struct{}{}
+func (s StringSlice) Add(keys ...string) {
+	for _, v := range keys {
+		s[key] = struct{}{}
+	}
 }
 
 // Remove removes the element from the slice
