@@ -11,7 +11,8 @@ func TestStringSlice_Add(t *testing.T) {
 	ss := NewStringSlice()
 
 	ss.Add("a", "b", "c", "a")
-
+	assert.ElementsMatch([]string{"a", "b", "c"}, ss.Sorted())
+	ss.Add("a", "b", "c", "a", "", " ", "    ")
 	assert.ElementsMatch([]string{"a", "b", "c"}, ss.Sorted())
 }
 
@@ -20,9 +21,7 @@ func TestStringSlice_Remove(t *testing.T) {
 	ss := NewStringSlice()
 
 	ss.Add("a", "b", "c")
-
 	ss.Remove("c")
-
 	assert.ElementsMatch([]string{"a", "b"}, ss.Sorted())
 
 	ss.Remove("x")
@@ -34,6 +33,5 @@ func TestStringSlice_Sorted(t *testing.T) {
 	ss := NewStringSlice()
 
 	ss.Add("z", "a", "m")
-
 	assert.ElementsMatch([]string{"a", "m", "z"}, ss.Sorted())
 }

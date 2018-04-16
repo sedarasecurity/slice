@@ -2,6 +2,7 @@ package slice
 
 import (
 	"sort"
+	"strings"
 )
 
 type StringSlice map[string]struct{}
@@ -18,7 +19,10 @@ func NewStringSlice() StringSlice {
 // Add adds the element to the slice
 func (s StringSlice) Add(keys ...string) {
 	for _, key := range keys {
-		s[key] = struct{}{}
+		key = strings.TrimSpace(key)
+		if len(key) > 0 {
+			s[key] = struct{}{}
+		}
 	}
 }
 
