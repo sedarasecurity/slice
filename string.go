@@ -31,6 +31,12 @@ func (s StringSlice) Remove(key string) {
 	delete(s, key)
 }
 
+// Contains checks for the element in the slice
+func (s StringSlice) Contains(key string) bool {
+	_, ok := s[key]
+	return ok
+}
+
 func (s StringSlice) Copy() StringSlice {
 	cp := NewStringSlice()
 
