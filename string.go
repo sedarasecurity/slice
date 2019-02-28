@@ -52,7 +52,15 @@ func (s StringSlice) Copy() StringSlice {
 }
 
 func (s StringSlice) Reset() {
-	s = make(map[string]struct{}, 0)
+	var (
+		keys []string
+	)
+	for k := range s {
+		keys = append(keys, k)
+	}
+	for _, v := range keys {
+		delete(s, v)
+	}
 }
 
 // Sorted returns a sorted string slice

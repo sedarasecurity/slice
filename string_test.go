@@ -44,3 +44,14 @@ func TestStringSlice_Sorted(t *testing.T) {
 	ss.Add("z", "a", "m")
 	assert.ElementsMatch([]string{"a", "m", "z"}, ss.Sorted())
 }
+
+func TestStringSlice_Reset(t *testing.T) {
+	assert := assert.New(t)
+	ss := NewStringSlice()
+
+	ss.Add("z", "a", "m")
+	assert.ElementsMatch([]string{"a", "m", "z"}, ss.Sorted())
+
+	ss.Reset()
+	assert.Len(ss.Sorted(), 0)
+}
