@@ -28,13 +28,24 @@ func TestStringSlice_Remove(t *testing.T) {
 	assert.ElementsMatch([]string{"a", "b"}, ss.Sorted())
 }
 
-func TestStringSlice_Contains(t *testing.T) {
+func TestStringSlice_Has(t *testing.T) {
 	assert := assert.New(t)
 	ss := NewStringSlice()
 
 	ss.Add("a", "b", "c")
-	assert.True(ss.Contains("c"))
-	assert.False(ss.Contains("d"))
+	assert.True(ss.Has("c"))
+	assert.False(ss.Has("d"))
+}
+
+func TestStringSlice_Contains(t *testing.T) {
+	assert := assert.New(t)
+	ss := NewStringSlice()
+
+	ss.Add("abcdefg", "hijklmn", "opqrstuv")
+	assert.True(ss.Contains("cde"))
+	assert.True(ss.Contains("op"))
+	assert.True(ss.Contains("tu"))
+	assert.False(ss.Contains("wxyz"))
 }
 
 func TestStringSlice_Sorted(t *testing.T) {

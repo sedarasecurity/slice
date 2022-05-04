@@ -13,7 +13,7 @@ type StringSlice map[string]struct{}
 // }
 
 func NewStringSlice() StringSlice {
-	return make(map[string]struct{}, 0)
+	return make(map[string]struct{})
 }
 
 // Add adds the element to the slice
@@ -31,12 +31,25 @@ func (s StringSlice) Remove(key string) {
 	delete(s, key)
 }
 
-// Contains checks for the element in the slice
-func (s StringSlice) Contains(key string) bool {
-	_, ok := s[key]
-	return ok
+// Has checks for the element in the slice
+func (s StringSlice) Has(key string) bool {
+	if _, ok := s[key]; ok {
+		return true
+	}
+	return false
 }
 
+// Contains checks for the substring element in all of the values in the slice
+func (s StringSlice) Contains(substr string) bool {
+	for _, value := range s.Sorted() {
+		if strings.Contains(value, substr) {
+			return true
+		}
+	}
+	return false
+}
+
+// Copy creates a copy of the string slice and returns it
 func (s StringSlice) Copy() StringSlice {
 	cp := NewStringSlice()
 
@@ -51,6 +64,7 @@ func (s StringSlice) Copy() StringSlice {
 	return cp
 }
 
+// Reset empties the container
 func (s StringSlice) Reset() {
 	var (
 		keys []string
