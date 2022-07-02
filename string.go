@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type StringSlice map[string]struct{}
+type StringSlice map[string]uint8
 
 // type StringSlice struct {
 // 	lock sync.Mutex
@@ -13,36 +13,43 @@ type StringSlice map[string]struct{}
 // }
 
 func NewStringSlice() StringSlice {
-	return make(map[string]struct{})
+	return make(map[string]uint8)
 }
 
 // Add adds the element to the slice
-func (s StringSlice) Add(keys ...string) {
+func (slice StringSlice) Add(keys ...string) {
 	for _, key := range keys {
 		key = strings.TrimSpace(key)
 		if len(key) > 0 {
-			s[key] = struct{}{}
+			if slice.Has(key) {
+				continue
+			}
+			slice[key] = 0
 		}
 	}
 }
 
 // Remove removes the element from the slice
-func (s StringSlice) Remove(key string) {
-	delete(s, key)
+func (slice StringSlice) Remove(key string) {
+	delete(slice, key)
 }
 
 // Has checks for the element in the slice
-func (s StringSlice) Has(key string) bool {
-	if _, ok := s[key]; ok {
-		return true
+func (slice StringSlice) Has(key string) bool {
+	for k := range slice {
+		if strings.EqualFold(key, k) {
+			return true
+		}
 	}
 	return false
 }
 
 // Contains checks for the substring element in all of the values in the slice
-func (s StringSlice) Contains(substr string) bool {
-	for _, value := range s.Sorted() {
-		if strings.Contains(value, substr) {
+func (slice StringSlice) Contains(substr string) bool {
+	for _, value := range slice.Sorted() {
+		haystack := strings.ToLower(value)
+		needle := strings.ToLower(substr)
+		if strings.Contains(haystack, needle) {
 			return true
 		}
 	}
@@ -50,46 +57,42 @@ func (s StringSlice) Contains(substr string) bool {
 }
 
 // Copy creates a copy of the string slice and returns it
-func (s StringSlice) Copy() StringSlice {
+func (slice StringSlice) Copy() StringSlice {
 	cp := NewStringSlice()
 
-	if s == nil {
+	if slice == nil {
 		return cp
 	}
 
-	for k := range s {
-		cp.Add(k)
-	}
+	cp.Add(slice.Sorted()...)
 
 	return cp
 }
 
 // Reset empties the container
-func (s StringSlice) Reset() {
-	var (
-		keys []string
-	)
-	for k := range s {
-		keys = append(keys, k)
-	}
-	for _, v := range keys {
-		delete(s, v)
+func (slice StringSlice) Reset() {
+	for _, v := range slice.keys() {
+		delete(slice, v)
 	}
 }
 
 // Sorted returns a sorted string slice
-func (s StringSlice) Sorted() []string {
-	if s == nil {
-		return []string{}
-	}
-
-	var arr []string
-
-	for key := range s {
-		arr = append(arr, key)
-	}
-
+func (slice StringSlice) Sorted() []string {
+	arr := slice.keys()
 	sort.Strings(arr)
 
+	return arr
+}
+
+func (slice StringSlice) keys() []string {
+	var arr []string
+
+	if slice == nil {
+		return arr
+	}
+
+	for key := range slice {
+		arr = append(arr, key)
+	}
 	return arr
 }
