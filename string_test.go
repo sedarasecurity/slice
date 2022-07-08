@@ -1,6 +1,7 @@
 package slice
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -35,6 +36,22 @@ func TestStringSlice_Has(t *testing.T) {
 	ss.Add("a", "b", "c")
 	assert.True(ss.Has("c"))
 	assert.False(ss.Has("d"))
+}
+
+func TestStringSlice_Matches(t *testing.T) {
+	assert := assert.New(t)
+	ss := NewStringSlice()
+
+	ss.Add("abcdefg", "hijklmn", "opqrstuv")
+	ok, matches := ss.Matches(regexp.MustCompile(`abcdefg`), -1)
+	assert.True(ok)
+	assert.Len(matches, 1)
+	ok, matches = ss.Matches(regexp.MustCompile(`xyz`), -1)
+	assert.False(ok)
+	assert.Len(matches, 0)
+	ok, matches = ss.Matches(regexp.MustCompile(`abc\w+`), -1)
+	assert.True(ok)
+	assert.Len(matches, 1)
 }
 
 func TestStringSlice_Contains(t *testing.T) {

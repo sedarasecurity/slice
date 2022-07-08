@@ -1,6 +1,7 @@
 package slice
 
 import (
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -42,6 +43,23 @@ func (slice StringSlice) Has(key string) bool {
 		}
 	}
 	return false
+}
+
+// Matches checks regex for a match against all elements. If providing `n` it determines
+// if we return after `n` matches or all matches n=-1
+func (slice StringSlice) Matches(re *regexp.Regexp, n int) (bool, []string) {
+	var matches []string
+
+	for _, value := range slice.Sorted() {
+		if re.MatchString(value) {
+			matches = append(matches, value)
+		}
+
+		if n == len(matches) {
+			return len(matches) > 0, matches
+		}
+	}
+	return len(matches) > 0, matches
 }
 
 // Contains checks for the substring element in all of the values in the slice
